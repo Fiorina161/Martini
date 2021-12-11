@@ -28,16 +28,16 @@ namespace Martini
             foreach (var filename in filenames)
             {
                 var btn = new ToolStripButton(Path.GetFileNameWithoutExtension(filename).ToPascalCase());
-                btn.Tag = filename;
+                Tag = filename;
                 btn.Click += ReadProfileFromDisk;
                 profilesMenu.DropDownItems.Add(btn);
             }
+
             profilesMenu.DropDownItems.Add(new ToolStripSeparator());
 
-            var saveButton = new ToolStripButton("Save profile as...");
+            var saveButton = new ToolStripButton("Save as...");
             saveButton.Click += OnSaveProfile;
-            //saveButton.Width = 100;
-            saveButton.AutoSize = true;
+            saveButton.Width = 100;
             profilesMenu.DropDownItems.Add(saveButton);
         }
 
