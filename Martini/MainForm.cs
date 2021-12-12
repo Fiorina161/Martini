@@ -23,12 +23,12 @@ namespace Martini
         private void CreateProfilesMenu()
         {
             profilesMenu.DropDownItems.Clear();
-            var filenames = Directory.EnumerateFiles(Environment.CurrentDirectory, "*.martini", SearchOption.TopDirectoryOnly);
+            var filenames = Directory.EnumerateFiles(Environment.CurrentDirectory, "*.zip", SearchOption.TopDirectoryOnly);
 
             foreach (var filename in filenames)
             {
                 var btn = new ToolStripButton(Path.GetFileNameWithoutExtension(filename).ToPascalCase());
-                Tag = filename;
+                btn.Tag = filename;
                 btn.Click += ReadProfileFromDisk;
                 profilesMenu.DropDownItems.Add(btn);
             }
@@ -58,7 +58,7 @@ namespace Martini
         {
             var name = Interaction.InputBox("Profile name?", "Save profile as...");
             if (!string.IsNullOrEmpty(name))
-                WriteProfileToDisk($"{name}.martini");
+                WriteProfileToDisk($"{name}.zip");
         }
 
         private void OnIniSelected(object sender, EventArgs e)
