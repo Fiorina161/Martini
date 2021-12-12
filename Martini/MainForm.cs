@@ -16,8 +16,8 @@ namespace Martini
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            CreateProfilesMenu();
-            CreateListView(LoadMartiniFiles());
+            Utils.Try(CreateProfilesMenu);
+            Utils.Try(CreateListView);
         }
 
         private void CreateProfilesMenu()
@@ -41,8 +41,9 @@ namespace Martini
             profilesMenu.DropDownItems.Add(saveButton);
         }
 
-        private void CreateListView(IEnumerable<IniFile> iniFiles)
+        private void CreateListView()
         {
+            var iniFiles = LoadMartiniFiles();
             listView.Items.Clear();
             foreach (var ini in iniFiles)
             {
@@ -58,7 +59,7 @@ namespace Martini
         {
             var name = Interaction.InputBox("Profile name?", "Save profile as...");
             if (!string.IsNullOrEmpty(name))
-                WriteProfileToDisk($"{name}.zip");
+                Utils.Try(() => WriteProfileToDisk($"{name}.zip"));
         }
 
         private void OnIniSelected(object sender, EventArgs e)
@@ -68,10 +69,12 @@ namespace Martini
             // appplication, which is counter-intuitive.
             var filename = ((IniFile)listView.SelectedItems[0].Tag).Filename;
             var ini = new IniFile();
-            ini.Load(filename);
-            using var w = new OptionsDialog(ini);
-            if (w.ShowDialog(this) == DialogResult.OK)
-                ini.Save();
+            if (Utils.Try(() => ini.Load(filename)))
+            {
+                using var w = new OptionsDialog(ini);
+                if (w.ShowDialog(this) == DialogResult.OK)
+                    Utils.Try(() => ini.Save());
+            }
         }
 
         private static IEnumerable<IniFile> LoadMartiniFiles()
@@ -103,8 +106,8 @@ namespace Martini
             var filename = (string)button.Tag;
             using var zip = ZipFile.OpenRead(filename);
             foreach (var zipEntry in zip.Entries)
-                zipEntry.ExtractToFile(zipEntry.FullName, true);
-            CreateListView(LoadMartiniFiles());
+                Utils.Try(() => zipEntry.ExtractToFile(zipEntry.FullName, true));
+            Utils.Try(CreateListView);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
