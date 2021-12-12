@@ -74,10 +74,18 @@ enabled=false
 
 # Screenshots
 
+Creating a Windows shortcut with the working directory set to the location of the ini files:
+
 ![](screenshots/martini-shortcut.png)
+
+View of supported *ini* files:
 
 ![](screenshots/martini-layout.png)
 
+Editing an *ini* file:
+
 ![](screenshots/martini-edit.png)
+
+List of known profiles: 
 
 ![](screenshots/martini-profiles.png)
