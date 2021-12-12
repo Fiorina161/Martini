@@ -80,7 +80,7 @@ namespace Martini
             {
                 var ini = new IniFile();
                 ini.Load(filename);
-                if (ini.HasHelpEntries)
+                if (ini.HasSpec)
                     yield return ini;
             }
         }

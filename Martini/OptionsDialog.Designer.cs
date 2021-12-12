@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.LayoutPanel = new System.Windows.Forms.Panel();
             this.LblSection = new System.Windows.Forms.Label();
             this.LblKey = new System.Windows.Forms.Label();
@@ -35,6 +36,7 @@
             this.BtnApply = new System.Windows.Forms.Button();
             this.BtnCancel = new System.Windows.Forms.Button();
             this.BtnOpenFile = new System.Windows.Forms.Button();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.LayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -86,6 +88,7 @@
             this.TxtValue.Name = "TxtValue";
             this.TxtValue.Size = new System.Drawing.Size(249, 22);
             this.TxtValue.TabIndex = 5;
+            this.toolTip1.SetToolTip(this.TxtValue, "Badaboom\r\n");
             this.TxtValue.TextChanged += new System.EventHandler(this.OnControlValueChanged);
             // 
             // BtnApply
@@ -126,6 +129,11 @@
             this.BtnOpenFile.UseVisualStyleBackColor = true;
             this.BtnOpenFile.Click += new System.EventHandler(this.BtnOpenFile_Click);
             // 
+            // toolTip1
+            // 
+            this.toolTip1.BackColor = System.Drawing.Color.Yellow;
+            this.toolTip1.ShowAlways = true;
+            // 
             // OptionsDialog
             // 
             this.AcceptButton = this.BtnApply;
@@ -162,5 +170,6 @@
         private System.Windows.Forms.Label LblKey;
         private System.Windows.Forms.TextBox TxtValue;
         private System.Windows.Forms.Button BtnOpenFile;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

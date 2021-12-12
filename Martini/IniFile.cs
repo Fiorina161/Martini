@@ -5,12 +5,12 @@ namespace Martini
 {
     public class IniFile
     {
-        public class Container : SortedDictionary<string, Dictionary<string, string>> { }
+        public Matrix Spec = new Matrix(); // Known sections, keys and default values.
+        public Matrix Tips = new Matrix(); // Tips associated to known keys.
+        public Matrix Data = new Matrix(); // Actual configuration.
 
-        public Container Help = new Container(); // Known sections, keys and default values.
-        public Container Data = new Container(); // Actual configuration.
-        public string Filename;                  // Original ini file name.
-        public bool HasHelpEntries;              // At least on key defined in help.
+        public string Filename;            // Original ini file name.
+        public bool HasSpec;               // At least on key defined in help.
 
         public void Load(string filename)
         {
@@ -23,54 +23,41 @@ namespace Martini
             using (var writer = new StreamWriter(Filename, false))
             {
                 writer.WriteLine("#");
-                WriteDictionary(writer, Help, "# ");
+                WriteDictionary(writer, Spec, "# ");
                 writer.WriteLine("");
                 WriteDictionary(writer, Data);
             }
 
             // Use a local function to write either section,
             // the only difference is the comment character.
-            void WriteDictionary(TextWriter writer, Container container, string prefix = "")
+            void WriteDictionary(TextWriter writer, Matrix container, string prefix = "")
             {
-                foreach (var kvp in container)
+                foreach (var kvp1 in container)
                 {
                     // Special case for global section.
-                    if (kvp.Key != "")
-                        writer.WriteLine($@"{prefix}[{kvp.Key}]");
+                    if (kvp1.Key != "")
+                        writer.WriteLine($@"{prefix}[{kvp1.Key}]");
 
-                    foreach (var kvp2 in kvp.Value)
+                    foreach (var kvp2 in kvp1.Value)
+                    {
+                        var tooltip = Tips.Get(kvp1.Key, kvp2.Key);
+                        if (prefix != "" && !string.IsNullOrEmpty(tooltip))
+                            writer.WriteLine($@"{prefix}{{{tooltip}}}");
                         writer.WriteLine($@"{prefix}{kvp2.Key}={kvp2.Value}");
+                    }
 
                     writer.WriteLine($@"{prefix}");
                 }
             }
         }
 
-        public void SetValue(string section, string key, string value)
-        {
-            if (!Data.ContainsKey(section))
-                Data[section] = new Dictionary<string, string>();
-            Data[section][key] = value;
-        }
-
-        public string GetValue(string section, string key)
-        {
-            if (Data.ContainsKey(section) && Data[section].ContainsKey(key))
-                return Data[section][key];
-            return GetDefaultValue(section, key);
-        }
-
-        public string GetDefaultValue(string section, string key)
-        {
-            return Help.ContainsKey(section) && Help[section].ContainsKey(key) ? Help[section][key] : "";
-        }
-
         public void Parse(string[] lines)
         {
-            var helpSection = "";
+            var specSection = "";
             var dataSection = "";
+            var tooltip = "";
 
-            Help[helpSection] = new Dictionary<string, string>();
+            Spec[specSection] = new Dictionary<string, string>();
             Data[dataSection] = new Dictionary<string, string>();
 
             foreach (var line in lines)
@@ -81,12 +68,16 @@ namespace Martini
 
                 if (ParseComment(line, ref comment))
                 {
-                    if (ParseSection(comment, ref helpSection))
-                        Help[helpSection] = new Dictionary<string, string>();
+                    ParseTooltip(comment, ref tooltip);
+
+                    if (ParseSection(comment, ref specSection))
+                        Spec[specSection] = new Dictionary<string, string>();
                     else if (ParseKeyValue(comment, ref key, ref value))
                     {
-                        Help[helpSection][key] = value;
-                        HasHelpEntries = true;
+                        Tips.Set(specSection, key, tooltip);
+                        Spec[specSection][key] = value;
+                        HasSpec = true;
+                        tooltip = "";
                     }
                 }
                 else
@@ -97,6 +88,13 @@ namespace Martini
                         Data[dataSection][key] = value;
                 }
             }
+        }
+
+        private static void ParseTooltip(string line, ref string tooltip)
+        {
+            var isTooltip = line.StartsWith("{") && line.EndsWith("}");
+            if (isTooltip)
+                tooltip = line.TrimStart('{').TrimEnd('}').Trim();
         }
 
         private static bool ParseComment(string line, ref string comment)
@@ -125,6 +123,24 @@ namespace Martini
                 value = line.Substring(i + 1).Trim();
             }
             return isKeyValue;
+        }
+
+
+        public class Matrix : SortedDictionary<string, Dictionary<string, string>>
+        {
+            public void Set(string section, string key, string value)
+            {
+                if (!ContainsKey(section))
+                    this[section] = new Dictionary<string, string>();
+                this[section][key] = value;
+            }
+
+            public string Get(string section, string key)
+            {
+                if (ContainsKey(section) && this[section].ContainsKey(key))
+                    return this[section][key];
+                return null;
+            }
         }
     }
 }

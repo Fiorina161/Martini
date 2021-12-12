@@ -24,6 +24,14 @@ use it is to place the executable somewhere in the path and call it from
 the *ini* directory or to create a Windows shortcut specifying the working
 directory to where the *ini* files live.
 
+You can attach a tooltip to a key by writing it on the line above and
+bounding it with curly braces as shown here:
+
+``` ini
+# {This is a comment for the next key}
+# key = value
+```
+
 Only the *ini* files matching the proper syntax will be managed through Martini (see example below)
 
 # Profiles

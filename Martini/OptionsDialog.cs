@@ -38,7 +38,7 @@ namespace Martini
             // Window title
             Text = $@"{Path.GetFileNameWithoutExtension(_ini.Filename).ToPascalCase()} settings";
 
-            foreach (var kvp1 in _ini.Help)
+            foreach (var kvp1 in _ini.Spec)
             {
                 var sectionName = kvp1.Key;
                 var isGlobalSection = string.IsNullOrWhiteSpace(sectionName);
@@ -53,20 +53,24 @@ namespace Martini
                 foreach (var kvp2 in kvp1.Value)
                 {
                     var keyName = kvp2.Key;
-                    var currentValue = _ini.GetValue(sectionName, keyName);
                     var defaultValue = kvp2.Value;
+                    var currentValue = _ini.Data.Get(sectionName, keyName) ?? defaultValue;
+                    var tooltip = _ini.Tips.Get(sectionName, keyName);
+                    tooltip = string.IsNullOrEmpty(tooltip)
+                        ? $"Default: '{defaultValue}'"
+                        : $"{tooltip} (Default: '{defaultValue}')";
 
                     // Key
-                    var label = CreateKeyLabel(top, keyName, currentValue != defaultValue);
+                    var label = CreateKeyLabel(top, keyName, currentValue != defaultValue, tooltip);
                     LayoutPanel.Controls.Add(label);
 
                     // Value (textbox or checkbox)
-                    var valueContext = new ValueContext(sectionName, keyName, defaultValue, label);
+                    var onClickData = new ValueContext(sectionName, keyName, defaultValue, label);
                     Control control;
                     if (defaultValue == "true" || defaultValue == "false")
-                        control = CreateCheckbox(valueLeftPos + 10, top, currentValue == "true", valueContext);
+                        control = CreateCheckbox(valueLeftPos + 10, top, currentValue == "true", onClickData);
                     else
-                        control = CreateTextBox(valueLeftPos + 10, top, currentValue, valueContext);
+                        control = CreateTextBox(valueLeftPos + 10, top, currentValue, onClickData);
 
                     LayoutPanel.Controls.Add(control);
                     top += TxtValue.Height + 5;
@@ -123,7 +127,7 @@ namespace Martini
             return checkbox;
         }
 
-        private Label CreateKeyLabel(int top, string text, bool modified)
+        private Label CreateKeyLabel(int top, string text, bool modified, string tooltip)
         {
             var label = new Label();
             label.Font = modified ? new Font(LblKey.Font, FontStyle.Bold) : LblKey.Font;
@@ -134,6 +138,7 @@ namespace Martini
             label.BackColor = LblKey.BackColor;
             label.Padding = LblKey.Padding;
             label.AutoSize = true;
+            toolTip1.SetToolTip(label, tooltip);
             return label;
         }
 
@@ -162,10 +167,10 @@ namespace Martini
                     switch (control)
                     {
                         case CheckBox ctrl:
-                            _ini.SetValue(context.Section, context.Key, ctrl.Checked ? "true" : "false");
+                            _ini.Data.Set(context.Section, context.Key, ctrl.Checked ? "true" : "false");
                             break;
                         case TextBox ctrl:
-                            _ini.SetValue(context.Section, context.Key, ctrl.Text);
+                            _ini.Data.Set(context.Section, context.Key, ctrl.Text);
                             break;
                     }
                 }
@@ -182,7 +187,7 @@ namespace Martini
             // Find the largest label to display for a nice alignment.
             var font = new Font(LblKey.Font, FontStyle.Bold);
             var max = 0;
-            foreach (var kvp1 in _ini.Help)
+            foreach (var kvp1 in _ini.Spec)
             {
                 foreach (var kvp2 in kvp1.Value)
                 {
