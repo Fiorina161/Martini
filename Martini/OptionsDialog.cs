@@ -91,15 +91,15 @@ namespace Martini
         {
             // Try to remove scrollbar without being taller than
             // the screen, center it all vertically.
-            var bounds = Screen.GetWorkingArea(this);
-            if (top < bounds.Height - 50)
+            var screenHeight = Screen.GetWorkingArea(this).Height;
+            if (top < screenHeight - 50)
             {
                 Height = top;
-                while (LayoutPanel.VerticalScroll.Visible)
-                    Height++;
+                while (LayoutPanel.VerticalScroll.Visible && Height < screenHeight - 50)
+                    Height += 10;
             }
-            if (Bottom > bounds.Height)
-                Top = (bounds.Height - Height) / 2;
+            if (Bottom > screenHeight)
+                Top = (screenHeight - Height) / 2;
         }
 
         private TextBox CreateTextBox(int left, int top, string text, ValueContext context)
@@ -184,18 +184,14 @@ namespace Martini
 
         private int GetMaxLabelWidth()
         {
-            // Find the largest label to display for a nice alignment.
-            var font = new Font(LblKey.Font, FontStyle.Bold);
             var max = 0;
             foreach (var kvp1 in _ini.Spec)
-            {
                 foreach (var kvp2 in kvp1.Value)
                 {
-                    var m = TextRenderer.MeasureText(kvp2.Key, font);
+                    var m = TextRenderer.MeasureText(kvp2.Key, LblKey.Font);
                     if (m.Width > max)
                         max = m.Width;
                 }
-            }
             return max;
         }
 

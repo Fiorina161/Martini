@@ -54,7 +54,7 @@
             this.LayoutPanel.Margin = new System.Windows.Forms.Padding(4);
             this.LayoutPanel.Name = "LayoutPanel";
             this.LayoutPanel.Padding = new System.Windows.Forms.Padding(13, 12, 13, 12);
-            this.LayoutPanel.Size = new System.Drawing.Size(391, 456);
+            this.LayoutPanel.Size = new System.Drawing.Size(561, 456);
             this.LayoutPanel.TabIndex = 0;
             // 
             // LblSection
@@ -66,7 +66,7 @@
             this.LblSection.Location = new System.Drawing.Point(0, 12);
             this.LblSection.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.LblSection.Name = "LblSection";
-            this.LblSection.Size = new System.Drawing.Size(391, 28);
+            this.LblSection.Size = new System.Drawing.Size(561, 28);
             this.LblSection.TabIndex = 3;
             this.LblSection.Text = "Section Label";
             // 
@@ -87,7 +87,7 @@
             this.TxtValue.Location = new System.Drawing.Point(125, 66);
             this.TxtValue.Margin = new System.Windows.Forms.Padding(4);
             this.TxtValue.Name = "TxtValue";
-            this.TxtValue.Size = new System.Drawing.Size(249, 22);
+            this.TxtValue.Size = new System.Drawing.Size(419, 22);
             this.TxtValue.TabIndex = 5;
             this.toolTip1.SetToolTip(this.TxtValue, "Badaboom\r\n");
             this.TxtValue.TextChanged += new System.EventHandler(this.OnControlValueChanged);
@@ -95,7 +95,7 @@
             // BtnApply
             // 
             this.BtnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.BtnApply.Location = new System.Drawing.Point(196, 516);
+            this.BtnApply.Location = new System.Drawing.Point(366, 516);
             this.BtnApply.Margin = new System.Windows.Forms.Padding(4);
             this.BtnApply.Name = "BtnApply";
             this.BtnApply.Size = new System.Drawing.Size(100, 28);
@@ -108,7 +108,7 @@
             // 
             this.BtnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.BtnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.BtnCancel.Location = new System.Drawing.Point(304, 516);
+            this.BtnCancel.Location = new System.Drawing.Point(474, 516);
             this.BtnCancel.Margin = new System.Windows.Forms.Padding(4);
             this.BtnCancel.Name = "BtnCancel";
             this.BtnCancel.Size = new System.Drawing.Size(100, 28);
@@ -142,7 +142,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.CancelButton = this.BtnCancel;
-            this.ClientSize = new System.Drawing.Size(449, 573);
+            this.ClientSize = new System.Drawing.Size(619, 573);
             this.Controls.Add(this.BtnOpenFile);
             this.Controls.Add(this.BtnCancel);
             this.Controls.Add(this.BtnApply);
