@@ -15,8 +15,8 @@ default values for the various sections and keys allowed in the ini file.
 It will force the content of the ini file to be complient with this
 help information.
 
-Default values of *true* or *false* are interpreted as booleans and
-a checkbox is used to toggle their values.
+- Default values of *true* or *false* are interpreted as booleans and a checkbox is used to toggle their values.
+- Bold keys indicate that the current is different than the default.
 
 Martini consists of a single executable and has no configuration of its own.
 All *ini* files are read from the current directory, so the best way to
@@ -74,10 +74,18 @@ enabled=false
 
 # Screenshots
 
+Creating a Windows shortcut with the working directory set to the location of the ini files:
+
 ![](screenshots/martini-shortcut.png)
+
+View of supported *ini* files:
 
 ![](screenshots/martini-layout.png)
 
+Editing an *ini* file:
+
 ![](screenshots/martini-edit.png)
+
+List of known profiles: 
 
 ![](screenshots/martini-profiles.png)
