@@ -34,6 +34,11 @@ bounding it with curly braces as shown here:
 
 Only the *ini* files matching the proper syntax will be managed through Martini (see example below)
 
+# Warning
+
+When applying a configuration, the content is overwriten with only the Martini comments and the current values.
+This is by design, to keep the managed files clean and tidy. 
+
 # Profiles
 
 Martini allows you to create a copy of all Martini files in a single profile file.
