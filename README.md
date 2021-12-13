@@ -37,14 +37,16 @@ Only the *ini* files matching the proper syntax will be managed through Martini 
 # Warning
 
 When applying a configuration, the content is overwriten with only the Martini comments and the current values.
-This is by design, to keep the managed files clean and tidy. 
+This is by design, it keeps the managed files clean and tidy. Documentation whould be in other files and multiple 
+configuration values are best managed using profiles (see below).
 
 # Profiles
 
-Martini allows you to create a copy of all Martini files in a single profile file.
-It really is only a *zip* file with the *.martini* extention.
+Profiles allow you to manage multiple versions of you *ini* files. A profile is created using the *Profiles/Save as..." 
+menu*. All the managed files are then packaged in a single zip archived with the chosen name.
 
-Files are restored, from *.martini* profiles through the *Profile* menu.
+To restore a profile, simply select it under the *Profiles* menu. The files in the archive will be extracted to replace the
+ones currently in the *ini* directory.
 
 # Martini syntax example
 
