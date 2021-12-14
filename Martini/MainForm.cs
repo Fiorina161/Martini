@@ -90,6 +90,14 @@ namespace Martini
 
         private void WriteProfileToDisk(string filename)
         {
+            if (File.Exists(filename))
+            {
+                if (MessageBox.Show(@"File already exists, replace?", filename, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                    File.Delete(filename);
+                else
+                    return;
+            }
+
             using var zip = ZipFile.Open(filename, ZipArchiveMode.Update);
 
             foreach (ListViewItem item in listView.Items)
