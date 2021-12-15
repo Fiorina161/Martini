@@ -213,6 +213,12 @@ namespace Martini
             context.KeyLabel.Font = new Font(context.KeyLabel.Font, sameAsDefault ? FontStyle.Regular : FontStyle.Bold);
         }
 
+        private void BtnOpenFile_Click(object sender, EventArgs e)
+        {
+	        // Open ini file using the default editor.
+	        System.Diagnostics.Process.Start(_ini.Filename);
+        }
+
         private struct ValueContext
         {
             // Attaches to the tag property of a value control.
@@ -227,12 +233,6 @@ namespace Martini
                 DefaultValue = defaultValue;
                 KeyLabel = keyLabel;
             }
-        }
-
-        private void BtnOpenFile_Click(object sender, EventArgs e)
-        {
-            // Ask OS to open the ini file on disk using the default ini editor program.
-            System.Diagnostics.Process.Start(_ini.Filename);
         }
     }
 }

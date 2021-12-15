@@ -32,10 +32,11 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.profilesMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.listView = new System.Windows.Forms.ListView();
-            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.saveProfileAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.listView = new System.Windows.Forms.ListView();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -43,7 +44,8 @@
             // 
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(40, 40);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.profilesMenu});
+            this.profilesMenu,
+            this.openDirectoryToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(402, 24);
@@ -58,6 +60,25 @@
             this.profilesMenu.Name = "profilesMenu";
             this.profilesMenu.Size = new System.Drawing.Size(67, 20);
             this.profilesMenu.Text = "Profiles...";
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(155, 6);
+            // 
+            // saveProfileAsToolStripMenuItem
+            // 
+            this.saveProfileAsToolStripMenuItem.Name = "saveProfileAsToolStripMenuItem";
+            this.saveProfileAsToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.saveProfileAsToolStripMenuItem.Text = "Save profile as...";
+            this.saveProfileAsToolStripMenuItem.Click += new System.EventHandler(this.OnSaveProfile);
+            // 
+            // openDirectoryToolStripMenuItem
+            // 
+            this.openDirectoryToolStripMenuItem.Name = "openDirectoryToolStripMenuItem";
+            this.openDirectoryToolStripMenuItem.Size = new System.Drawing.Size(107, 20);
+            this.openDirectoryToolStripMenuItem.Text = "Open in Explorer";
+            this.openDirectoryToolStripMenuItem.Click += new System.EventHandler(this.OnOpenDirectoryClick);
             // 
             // listView
             // 
@@ -78,18 +99,6 @@
             this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
             this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
             this.imageList1.Images.SetKeyName(0, "ini-icon.png");
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
-            // 
-            // saveProfileAsToolStripMenuItem
-            // 
-            this.saveProfileAsToolStripMenuItem.Name = "saveProfileAsToolStripMenuItem";
-            this.saveProfileAsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.saveProfileAsToolStripMenuItem.Text = "Save profile as...";
-            this.saveProfileAsToolStripMenuItem.Click += new System.EventHandler(this.OnSaveProfile);
             // 
             // MainForm
             // 
@@ -119,6 +128,7 @@
         private System.Windows.Forms.ToolStripMenuItem profilesMenu;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem saveProfileAsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openDirectoryToolStripMenuItem;
     }
 }
 

@@ -127,5 +127,10 @@ namespace Martini
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
+
+        private void OnOpenDirectoryClick(object sender, EventArgs e)
+        {
+	        System.Diagnostics.Process.Start(Environment.CurrentDirectory);
+        }
     }
 }
