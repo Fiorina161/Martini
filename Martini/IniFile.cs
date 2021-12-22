@@ -1,157 +1,165 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Martini
 {
     public class IniFile
     {
-        public Matrix Spec = new Matrix(); // Known sections, keys and default values.
-        public Matrix Tips = new Matrix(); // Tips associated to known keys.
-        public Matrix Opts = new Matrix(); // Options associated to known keys.
-        public Matrix Data = new Matrix(); // Actual configuration.
+        private List<IniEntry> _iniEntries = new List<IniEntry>();
 
-        public string Filename;            // Original ini file name.
-        public bool HasSpec;               // At least on key defined in help.
+        public string FileName;
+
+        public bool ContainsInfo => _iniEntries.Count > 0;
+        public IEnumerable<string> GetSectionNames() => _iniEntries.Select(x => x.Section).Distinct();
+        public IEnumerable<string> GetKeyNames(string section) => _iniEntries.Where(x => x.Section == section).Select(x => x.Key);
+        public IEnumerable<IniEntry> GetIniEntries(string section) => _iniEntries.Where(x => x.Section == section);
+        public IniEntry GetIniEntry(string section, string key) => GetIniEntries(section).FirstOrDefault(x => x.Key == key);
 
         public void Load(string filename)
         {
-            Filename = filename;
             Parse(File.ReadAllLines(filename));
+            FileName = filename;
         }
 
         public void Save()
         {
-            using (var writer = new StreamWriter(Filename, false))
-            {
-                writer.WriteLine("#");
-                WriteDictionary(writer, Spec, "# ");
-                writer.WriteLine("");
-                WriteDictionary(writer, Data);
-            }
+            var lines = new List<string>();
 
-            // Use a local function to write either section,
-            // the only difference is the comment character.
-            void WriteDictionary(TextWriter writer, Matrix container, string prefix = "")
+            lines.Add("############################################################");
+            lines.Add("#");
+            var spaced = false;
+
+            foreach (var section in GetSectionNames())
             {
-                foreach (var kvp1 in container)
+                if (!string.IsNullOrEmpty(section))
+                    lines.Add($"# [{section}]");
+
+                foreach (var entry in GetIniEntries(section))
                 {
-                    // Special case for global section.
-                    if (kvp1.Key != "")
-                        writer.WriteLine($@"{prefix}[{kvp1.Key}]");
+                    var shouldSpaceOut = entry.HasNote || entry.IsRestricted;
+                    if (shouldSpaceOut && !spaced)
+                        lines.Add("#");
 
-                    foreach (var kvp2 in kvp1.Value)
-                    {
-                        var tooltip = Tips.Get(kvp1.Key, kvp2.Key);
-                        if (prefix != "" && !string.IsNullOrEmpty(tooltip))
-                            writer.WriteLine($@"{prefix}{{{tooltip}}}");
-                        writer.WriteLine($@"{prefix}{kvp2.Key}={kvp2.Value}");
-                    }
-
-                    writer.WriteLine($@"{prefix}");
+                    if (entry.HasNote)
+                        lines.Add($"# {{{entry.Note}}}");
+                    if (entry.IsRestricted)
+                        lines.Add($"# <{string.Join("|", entry.AllowedValues)}>");
+                    lines.Add($"# {entry.Key} = {entry.DefaultValue}");
+                    if (shouldSpaceOut)
+                        lines.Add("#");
+                    spaced = shouldSpaceOut;
                 }
+                lines.Add("#");
             }
+            lines.Add("############################################################");
+
+            foreach (var section in GetSectionNames())
+            {
+                lines.Add(string.IsNullOrEmpty(section) ? "" : $"[{section}]");
+                foreach (var entry in GetIniEntries(section))
+                    lines.Add($"{entry.Key} = {entry.DefaultValue}");
+                lines.Add("");
+            }
+            File.WriteAllLines(FileName, lines);
         }
 
-        public void Parse(string[] lines)
+        public void Parse(string lines)
         {
-            var specSection = "";
-            var dataSection = "";
-            var tooltip = "";
+            Parse(Regex.Split(lines, "\r\n|\r|\n"));
+        }
 
-            Spec[specSection] = new Dictionary<string, string>();
-            Data[dataSection] = new Dictionary<string, string>();
-
-            foreach (var line in lines)
+        public void Parse(IEnumerable<string> lines)
+        {
+            _iniEntries = new List<IniEntry>();
+            var section = "";
+            var effectiveSection = "";
+            var note = "";
+            var allowedValues = new string[] { };
+            var key = "";
+            var value = "";
+            foreach (var line in lines.Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)))
             {
-                var options = "";
-                var comment = "";
-                var key = "";
-                var value = "";
+                var uncommented = "";
 
-                if (ParseComment(line, ref comment))
+                if (ParseComment(line, ref uncommented))
                 {
-                    ParseTooltip(comment, ref tooltip);
-                    ParseOptions(comment, ref options);
-
-                    if (ParseSection(comment, ref specSection))
-                        Spec[specSection] = new Dictionary<string, string>();
-                    else if (ParseKeyValue(comment, ref key, ref value))
+                    if (ParseSection(uncommented, ref section))
+                        continue;
+                    if (ParseNote(uncommented, ref note))
+                        continue;
+                    if (ParseAllowedValues(uncommented, ref allowedValues))
+                        continue;
+                    if (ParseKeyValue(uncommented, ref key, ref value))
                     {
-                        Tips.Set(specSection, key, tooltip);
-                        Opts.Set(specSection,key,options);
-                        Spec[specSection][key] = value;
-                        HasSpec = true;
-                        tooltip = "";
+                        var entry = new IniEntry(section, key, value, note, allowedValues);
+                        note = "";
+                        allowedValues = new string[] { };
+                        _iniEntries.Add(entry);
                     }
                 }
                 else
                 {
-                    if (ParseSection(line, ref dataSection))
-                        Data[dataSection] = new Dictionary<string, string>();
-                    else if (ParseKeyValue(line, ref key, ref value))
-                        Data[dataSection][key] = value;
+                    key = value = "";
+
+                    if (ParseSection(line, ref effectiveSection))
+                        continue;
+                    if (ParseKeyValue(line, ref key, ref value))
+                    {
+                        var entry = _iniEntries.Find(x => x.Section == effectiveSection && x.Key == key);
+                        if (entry != null)
+                            entry.CurrentValue = value;
+                    }
                 }
             }
         }
 
-        private static void ParseOptions(string line, ref string options)
-        {
-            var isOptions = line.StartsWith("{") && line.EndsWith("}");
-            if (isOptions)
-                options = line.TrimStart('{').TrimEnd('}').Trim();
-        }
-
-        private static void ParseTooltip(string line, ref string tooltip)
-        {
-            var isTooltip = line.StartsWith("{") && line.EndsWith("}");
-            if (isTooltip)
-                tooltip = line.TrimStart('{').TrimEnd('}').Trim();
-        }
-
-        private static bool ParseComment(string line, ref string comment)
+        private static bool ParseComment(string line, ref string uncommented)
         {
             var isComment = line.StartsWith("#");
             if (isComment)
-                comment = line.Substring(1).Trim();
+                uncommented = line.TrimStart('#').Trim();
             return isComment;
         }
 
-        private static bool ParseSection(string line, ref string section)
+        private static bool ParseSection(string line, ref string name)
         {
-            var isSection = line.StartsWith("[") && line.EndsWith("]");
-            if (isSection)
-                section = line.TrimStart('[').TrimEnd(']').Trim();
-            return isSection;
+            var isSectionMarker = line.StartsWith("[") && line.EndsWith("]");
+            if (isSectionMarker)
+                name = line.TrimStart('[').TrimEnd(']').Trim();
+            return isSectionMarker;
         }
 
         private static bool ParseKeyValue(string line, ref string key, ref string value)
         {
             var i = line.IndexOf('=');
-            var isKeyValue = i > 0;
-            if (isKeyValue)
+            if (i > 0)
             {
                 key = line.Substring(0, i).Trim();
                 value = line.Substring(i + 1).Trim();
+                return true;
             }
-            return isKeyValue;
+            return false;
         }
 
-
-        public class Matrix : SortedDictionary<string, Dictionary<string, string>>
+        private static bool ParseNote(string line, ref string note)
         {
-            public void Set(string section, string key, string value)
-            {
-                if (!ContainsKey(section))
-                    this[section] = new Dictionary<string, string>();
-                this[section][key] = value;
-            }
+            var isNote = line.StartsWith("{") && line.EndsWith("}");
+            if (isNote)
+                note = line.TrimStart('{').TrimEnd('}').Trim();
+            return isNote;
+        }
 
-            public string Get(string section, string key)
-            {
-                if (ContainsKey(section) && this[section].ContainsKey(key))
-                    return this[section][key];
-                return null;
-            }
+        private static bool ParseAllowedValues(string line, ref string[] values)
+        {
+            var isValueSet = line.StartsWith("<") && line.EndsWith(">");
+            if (isValueSet)
+                values = line.TrimStart('<').TrimEnd('>')
+                    .Split('|')
+                    .Select(x => x.Trim())
+                    .ToArray();
+            return isValueSet;
         }
     }
 }

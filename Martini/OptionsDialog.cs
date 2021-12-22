@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -36,41 +37,36 @@ namespace Martini
             var valueLeftPos = LblKey.Left + GetMaxLabelWidth();
 
             // Window title
-            Text = $@"{Path.GetFileNameWithoutExtension(_ini.Filename).ToPascalCase()} settings";
+            Text = $@"{Path.GetFileNameWithoutExtension(_ini.FileName).ToPascalCase()} settings";
 
-            foreach (var kvp1 in _ini.Spec)
+
+
+            foreach (var section in _ini.GetSectionNames())
             {
-                var sectionName = kvp1.Key;
-                var isGlobalSection = string.IsNullOrWhiteSpace(sectionName);
+                var isGlobalSection = string.IsNullOrWhiteSpace(section);
 
                 // Section title
                 if (!isGlobalSection)
                 {
-                    LayoutPanel.Controls.Add(CreateSectionLabel(top, sectionName));
+                    LayoutPanel.Controls.Add(CreateSectionLabel(top, section));
                     top += LblSection.Height + 10;
                 }
 
-                foreach (var kvp2 in kvp1.Value)
+                foreach (var entry in _ini.GetIniEntries(section))
                 {
-                    var keyName = kvp2.Key;
-                    var defaultValue = kvp2.Value;
-                    var currentValue = _ini.Data.Get(sectionName, keyName) ?? defaultValue;
-                    var tooltip = _ini.Tips.Get(sectionName, keyName);
-                    tooltip = string.IsNullOrEmpty(tooltip)
-                        ? $"Default: '{defaultValue}'"
-                        : $"{tooltip} (Default: '{defaultValue}')";
+                    var tooltip = $"{entry.Note} Default={entry.DefaultValue}";
 
                     // Key
-                    var label = CreateKeyLabel(top, keyName, currentValue != defaultValue, tooltip);
+                    var label = CreateKeyLabel(top, entry.Key, entry.HasChanged, tooltip);
                     LayoutPanel.Controls.Add(label);
 
                     // Value (textbox or checkbox)
-                    var onClickData = new ValueContext(sectionName, keyName, defaultValue, label);
+                    var onClickData = new ValueContext(section, entry.Key, entry.DefaultValue, label);
                     Control control;
-                    if (defaultValue == "true" || defaultValue == "false")
-                        control = CreateCheckbox(valueLeftPos + 10, top, currentValue == "true", onClickData);
+                    if (entry.IsBoolean)
+                        control = CreateCheckbox(valueLeftPos + 10, top, entry.CurrentOrDefault == "true", onClickData);
                     else
-                        control = CreateTextBox(valueLeftPos + 10, top, currentValue, onClickData);
+                        control = CreateTextBox(valueLeftPos + 10, top, entry.CurrentOrDefault, onClickData);
 
                     LayoutPanel.Controls.Add(control);
                     top += TxtValue.Height + 5;
@@ -167,10 +163,10 @@ namespace Martini
                     switch (control)
                     {
                         case CheckBox ctrl:
-                            _ini.Data.Set(context.Section, context.Key, ctrl.Checked ? "true" : "false");
+                            _ini.GetIniEntry(context.Section, context.Key).CurrentValue = ctrl.Checked ? "true" : "false";
                             break;
                         case TextBox ctrl:
-                            _ini.Data.Set(context.Section, context.Key, ctrl.Text);
+                            _ini.GetIniEntry(context.Section, context.Key).CurrentValue = ctrl.Text;
                             break;
                     }
                 }
@@ -185,10 +181,10 @@ namespace Martini
         private int GetMaxLabelWidth()
         {
             var max = 0;
-            foreach (var kvp1 in _ini.Spec)
-                foreach (var kvp2 in kvp1.Value)
+            foreach (var section in _ini.GetSectionNames())
+                foreach (var entry in _ini.GetIniEntries(section))
                 {
-                    var m = TextRenderer.MeasureText(kvp2.Key, LblKey.Font);
+                    var m = TextRenderer.MeasureText(entry.Key, LblKey.Font);
                     if (m.Width > max)
                         max = m.Width;
                 }
@@ -215,8 +211,8 @@ namespace Martini
 
         private void BtnOpenFile_Click(object sender, EventArgs e)
         {
-	        // Open ini file using the default editor.
-	        System.Diagnostics.Process.Start(_ini.Filename);
+            // Open ini file using the default editor.
+            Process.Start(_ini.FileName);
         }
 
         private struct ValueContext

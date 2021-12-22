@@ -38,12 +38,5 @@ namespace Martini
             Note = note;
             AllowedValues = allowedValues;
         }
-
-
-        public override string ToString()
-        {
-            var sAllowedValues = string.Join("|", AllowedValues);
-            return $"[{Section}] {Key}={CurrentValue} DEFAULT={DefaultValue} ALLOWED={sAllowedValues} NOTE={Note}";
-        }
     }
 }

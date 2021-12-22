@@ -48,7 +48,7 @@ namespace Martini
             foreach (var ini in iniFiles)
             {
                 var item = new ListViewItem();
-                item.Text = Path.GetFileNameWithoutExtension(ini.Filename);
+                item.Text = Path.GetFileNameWithoutExtension(ini.FileName);
                 item.ImageIndex = 0;
                 item.Tag = ini;
                 listView.Items.Add(item);
@@ -67,7 +67,7 @@ namespace Martini
             // Although we already have the ini, we reload it in case it has 
             // been manually changed... Otherwise we have to restart the
             // appplication, which is counter-intuitive.
-            var filename = ((IniFile)listView.SelectedItems[0].Tag).Filename;
+            var filename = ((IniFile)listView.SelectedItems[0].Tag).FileName;
             var ini = new IniFile();
             if (Utils.Try(() => ini.Load(filename)))
             {
@@ -83,7 +83,7 @@ namespace Martini
             {
                 var ini = new IniFile();
                 ini.Load(filename);
-                if (ini.HasSpec)
+                if (ini.ContainsInfo)
                     yield return ini;
             }
         }
@@ -103,7 +103,7 @@ namespace Martini
             foreach (ListViewItem item in listView.Items)
             {
                 var ini = (IniFile)item.Tag;
-                zip.CreateEntryFromFile(ini.Filename, Path.GetFileName(ini.Filename), CompressionLevel.Optimal);
+                zip.CreateEntryFromFile(ini.FileName, Path.GetFileName(ini.FileName), CompressionLevel.Optimal);
             }
             CreateProfilesMenu();
         }
