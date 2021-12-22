@@ -7,6 +7,7 @@ namespace Martini
     {
         public Matrix Spec = new Matrix(); // Known sections, keys and default values.
         public Matrix Tips = new Matrix(); // Tips associated to known keys.
+        public Matrix Opts = new Matrix(); // Options associated to known keys.
         public Matrix Data = new Matrix(); // Actual configuration.
 
         public string Filename;            // Original ini file name.
@@ -62,6 +63,7 @@ namespace Martini
 
             foreach (var line in lines)
             {
+                var options = "";
                 var comment = "";
                 var key = "";
                 var value = "";
@@ -69,12 +71,14 @@ namespace Martini
                 if (ParseComment(line, ref comment))
                 {
                     ParseTooltip(comment, ref tooltip);
+                    ParseOptions(comment, ref options);
 
                     if (ParseSection(comment, ref specSection))
                         Spec[specSection] = new Dictionary<string, string>();
                     else if (ParseKeyValue(comment, ref key, ref value))
                     {
                         Tips.Set(specSection, key, tooltip);
+                        Opts.Set(specSection,key,options);
                         Spec[specSection][key] = value;
                         HasSpec = true;
                         tooltip = "";
@@ -88,6 +92,13 @@ namespace Martini
                         Data[dataSection][key] = value;
                 }
             }
+        }
+
+        private static void ParseOptions(string line, ref string options)
+        {
+            var isOptions = line.StartsWith("{") && line.EndsWith("}");
+            if (isOptions)
+                options = line.TrimStart('{').TrimEnd('}').Trim();
         }
 
         private static void ParseTooltip(string line, ref string tooltip)

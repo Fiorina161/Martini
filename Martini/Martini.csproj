@@ -55,7 +55,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IniEntry.cs" />
     <Compile Include="IniFile.cs" />
+    <Compile Include="IniParser.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="OptionsDialog.cs">
       <SubType>Form</SubType>
