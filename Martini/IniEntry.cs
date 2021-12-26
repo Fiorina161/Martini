@@ -17,7 +17,7 @@ namespace Martini
             {
 	            var currentOrDefault = CurrentValue??DefaultValue;
 
-	            if (IsRestricted) 
+	            if (IsEnumeration) 
 		            return AllowedValues.Contains(currentOrDefault) ? currentOrDefault : AllowedValues.FirstOrDefault();
 	            
 	            return currentOrDefault;
@@ -26,7 +26,7 @@ namespace Martini
 
         public bool HasNote => !string.IsNullOrEmpty(Note);
         public bool HasChanged => CurrentValue != null && CurrentValue != DefaultValue;
-        public bool IsRestricted => AllowedValues.Length > 0;
+        public bool IsEnumeration => AllowedValues.Length > 0;
         public bool IsBoolean => DefaultValue == "true" || DefaultValue == "false";
         public bool IsGlobal => string.IsNullOrEmpty(Section);
 

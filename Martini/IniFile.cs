@@ -38,13 +38,13 @@ namespace Martini
 
                 foreach (var entry in GetIniEntries(section))
                 {
-                    var shouldSpaceOut = entry.HasNote || entry.IsRestricted;
+                    var shouldSpaceOut = entry.HasNote || entry.IsEnumeration;
                     if (shouldSpaceOut && !spaced)
                         lines.Add("#");
 
                     if (entry.HasNote)
                         lines.Add($"# {{{entry.Note}}}");
-                    if (entry.IsRestricted)
+                    if (entry.IsEnumeration)
                         lines.Add($"# <{string.Join("|", entry.AllowedValues)}>");
                     lines.Add($"# {entry.Key} = {entry.DefaultValue}");
                     if (shouldSpaceOut)
@@ -59,7 +59,7 @@ namespace Martini
             {
                 lines.Add(string.IsNullOrEmpty(section) ? "" : $"[{section}]");
                 foreach (var entry in GetIniEntries(section))
-                    lines.Add($"{entry.Key} = {entry.DefaultValue}");
+                    lines.Add($"{entry.Key} = {entry.CurrentOrDefault}");
                 lines.Add("");
             }
             File.WriteAllLines(FileName, lines);

@@ -61,22 +61,26 @@
             // 
             this.LblSection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.LblSection.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LblSection.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.LblSection.BackColor = System.Drawing.Color.Transparent;
+            this.LblSection.Font = new System.Drawing.Font("Tahoma", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LblSection.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.LblSection.Location = new System.Drawing.Point(0, 12);
             this.LblSection.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.LblSection.Name = "LblSection";
+            this.LblSection.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
             this.LblSection.Size = new System.Drawing.Size(561, 28);
             this.LblSection.TabIndex = 3;
             this.LblSection.Text = "Section Label";
+            this.LblSection.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // LblKey
             // 
             this.LblKey.AutoSize = true;
+            this.LblKey.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LblKey.Location = new System.Drawing.Point(17, 70);
             this.LblKey.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.LblKey.Name = "LblKey";
-            this.LblKey.Size = new System.Drawing.Size(67, 16);
+            this.LblKey.Size = new System.Drawing.Size(61, 16);
             this.LblKey.TabIndex = 4;
             this.LblKey.Text = "Key Label";
             // 
@@ -84,10 +88,11 @@
             // 
             this.TxtValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.TxtValue.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.TxtValue.Location = new System.Drawing.Point(125, 66);
             this.TxtValue.Margin = new System.Windows.Forms.Padding(4);
             this.TxtValue.Name = "TxtValue";
-            this.TxtValue.Size = new System.Drawing.Size(419, 22);
+            this.TxtValue.Size = new System.Drawing.Size(419, 23);
             this.TxtValue.TabIndex = 5;
             this.toolTip1.SetToolTip(this.TxtValue, "Badaboom\r\n");
             this.TxtValue.TextChanged += new System.EventHandler(this.OnControlValueChanged);

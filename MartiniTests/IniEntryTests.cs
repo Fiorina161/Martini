@@ -12,7 +12,7 @@ namespace MartiniTests
             var sut = new IniEntry("", "", "", "", new string[] { });
             Assert.IsFalse(sut.HasNote);
             Assert.IsFalse(sut.HasChanged);
-            Assert.IsFalse(sut.IsRestricted);
+            Assert.IsFalse(sut.IsEnumeration);
             Assert.IsFalse(sut.IsBoolean);
             Assert.IsTrue(sut.IsGlobal);
             Assert.AreEqual(sut.CurrentOrDefault, "");

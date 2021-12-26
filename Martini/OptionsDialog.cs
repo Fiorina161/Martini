@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using CheckBox = System.Windows.Forms.CheckBox;
+using ComboBox = System.Windows.Forms.ComboBox;
 using Label = System.Windows.Forms.Label;
 using TextBox = System.Windows.Forms.TextBox;
 
@@ -49,12 +52,14 @@ namespace Martini
                 if (!isGlobalSection)
                 {
                     LayoutPanel.Controls.Add(CreateSectionLabel(top, section));
-                    top += LblSection.Height + 10;
+                    top += LblSection.Height + 25;
                 }
 
                 foreach (var entry in _ini.GetIniEntries(section))
                 {
-                    var tooltip = $"{entry.Note} Default={entry.DefaultValue}";
+                    if (!string.IsNullOrEmpty(entry.Note) && !entry.Note.EndsWith("."))
+                        entry.Note += ".";
+                    var tooltip = $"{entry.Note} Default=\"{entry.DefaultValue}\"";
 
                     // Key
                     var label = CreateKeyLabel(top, entry.Key, entry.HasChanged, tooltip);
@@ -65,21 +70,17 @@ namespace Martini
                     Control control;
                     if (entry.IsBoolean)
                         control = CreateCheckbox(valueLeftPos + 10, top, entry.CurrentOrDefault == "true", onClickData);
+                    else if (entry.IsEnumeration)
+                        control = CreateComboBox(valueLeftPos + 10, top, entry.CurrentOrDefault, entry.AllowedValues, onClickData);
                     else
                         control = CreateTextBox(valueLeftPos + 10, top, entry.CurrentOrDefault, onClickData);
 
                     LayoutPanel.Controls.Add(control);
                     top += TxtValue.Height + 5;
                 }
-
-                // Add extra padding between sections...
-                if (!isGlobalSection)
-                    top += LblSection.Height;
             }
 
             ResizeAndPlace(top);
-
-            // Get rid of selected text on the first textbox...
             ActiveControl = LayoutPanel;
         }
 
@@ -96,6 +97,27 @@ namespace Martini
             }
             if (Bottom > screenHeight)
                 Top = (screenHeight - Height) / 2;
+        }
+
+        private ComboBox CreateComboBox(int left, int top, string text, IEnumerable entryAllowedValues, ValueContext context)
+        {
+            var combobox = new ComboBox();
+            combobox.DropDownStyle = ComboBoxStyle.DropDownList;
+            combobox.Font = TxtValue.Font;
+            combobox.Top = top;
+            combobox.Left = left;
+            combobox.Tag = context;
+            combobox.Width = LayoutPanel.ClientRectangle.Width - left - 20;
+            combobox.SelectedIndexChanged += OnControlValueChanged;
+            combobox.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+            combobox.Items.AddRange((object[])entryAllowedValues);
+            foreach (var item in combobox.Items)
+                if (item.ToString() == text)
+                {
+                    combobox.SelectedItem = item;
+                    break;
+                }
+            return combobox;
         }
 
         private TextBox CreateTextBox(int left, int top, string text, ValueContext context)
@@ -150,6 +172,7 @@ namespace Martini
             label.ForeColor = LblSection.ForeColor;
             label.BackColor = LblSection.BackColor;
             label.Padding = LblSection.Padding;
+            label.TextAlign = LblSection.TextAlign;
             return label;
         }
 
@@ -162,6 +185,9 @@ namespace Martini
                     var context = (ValueContext)control.Tag;
                     switch (control)
                     {
+                        case ComboBox ctrl:
+                            _ini.GetIniEntry(context.Section, context.Key).CurrentValue = ctrl.SelectedItem.ToString();
+                            break;
                         case CheckBox ctrl:
                             _ini.GetIniEntry(context.Section, context.Key).CurrentValue = ctrl.Checked ? "true" : "false";
                             break;
@@ -203,6 +229,9 @@ namespace Martini
                     sameAsDefault = ctrl.Checked = ctrl.Checked && context.DefaultValue == "true";
                     break;
                 case TextBox ctrl:
+                    sameAsDefault = ctrl.Text.Trim() == context.DefaultValue;
+                    break;
+                case ComboBox ctrl:
                     sameAsDefault = ctrl.Text.Trim() == context.DefaultValue;
                     break;
             }
