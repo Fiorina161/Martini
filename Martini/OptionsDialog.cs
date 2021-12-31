@@ -62,7 +62,7 @@ namespace Martini
                     var tooltip = $"{entry.Note} Default=\"{entry.DefaultValue}\"";
 
                     // Key
-                    var label = CreateKeyLabel(top, entry.Key, entry.HasChanged, tooltip);
+                    var label = CreateKeyLabel(top+3, entry.Key, entry.HasChanged, tooltip);
                     LayoutPanel.Controls.Add(label);
 
                     // Value (textbox or checkbox)

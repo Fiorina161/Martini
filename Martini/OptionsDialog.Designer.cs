@@ -77,6 +77,7 @@
             // 
             this.LblKey.AutoSize = true;
             this.LblKey.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LblKey.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.LblKey.Location = new System.Drawing.Point(17, 70);
             this.LblKey.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.LblKey.Name = "LblKey";
