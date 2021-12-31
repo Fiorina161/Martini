@@ -18,6 +18,7 @@ help information.
 - Default values of *true* or *false* are interpreted as booleans and a checkbox is used to toggle their values.
 - Bold keys indicate that the current is different than the default.
 
+
 Martini consists of a single executable and has no configuration of its own.
 All *ini* files are read from the current directory, so the best way to
 use it is to place the executable somewhere in the path and call it from
@@ -30,6 +31,14 @@ bounding it with curly braces as shown here:
 ``` ini
 # {This is a comment for the next key}
 # key = value
+```
+
+You can restrict value selection to a set of allowed values by placing them between < > characters, above the key. Possible values must be separated by the pipe character ('|') :
+
+``` ini
+# {Application trace level}
+# <Error|Warning|Info|Debug|Verbose>
+# trace = Info
 ```
 
 Only the *ini* files matching the proper syntax will be managed through Martini (see example below)
