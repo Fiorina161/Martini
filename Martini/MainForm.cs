@@ -27,7 +27,7 @@ namespace Martini
 
             foreach (var filename in filenames)
             {
-                var btn = new ToolStripButton(Path.GetFileNameWithoutExtension(filename).ToPascalCase());
+                var btn = new ToolStripButton(Path.GetFileNameWithoutExtension(filename));
                 btn.Tag = filename;
                 btn.Click += ReadProfileFromDisk;
                 profilesMenu.DropDownItems.Add(btn);
