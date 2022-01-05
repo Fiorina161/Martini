@@ -167,7 +167,7 @@ namespace Martini
             label.Width = LblSection.Width;
             label.Anchor = LblSection.Anchor;
             label.Top = top + LayoutPanel.Padding.Top;
-            label.Text = text.ToPascalCase();
+            label.Text = text.ToUpper();
             label.Font = LblSection.Font;
             label.ForeColor = LblSection.ForeColor;
             label.BackColor = LblSection.BackColor;
