@@ -2,7 +2,7 @@
 
 namespace Martini
 {
-    public class IniEntry
+    public class IniFileEntry
     {
         public string Section;
         public string Key;
@@ -30,7 +30,7 @@ namespace Martini
         public bool IsBoolean => DefaultValue == "true" || DefaultValue == "false";
         public bool IsGlobal => string.IsNullOrEmpty(Section);
 
-        public IniEntry(string section, string key, string defaultValue, string note, string[] allowedValues)
+        public IniFileEntry(string section, string key, string defaultValue, string note, string[] allowedValues)
         {
             Section = section;
             Key = key;

@@ -7,15 +7,15 @@ namespace Martini
 {
     public class IniFile
     {
-        private List<IniEntry> _iniEntries = new List<IniEntry>();
+        private List<IniFileEntry> _iniEntries = new List<IniFileEntry>();
 
         public string FileName;
 
-        public bool ContainsInfo => _iniEntries.Count > 0;
+        public bool IsSupported => _iniEntries.Count > 0;
         public IEnumerable<string> GetSectionNames() => _iniEntries.Select(x => x.Section).Distinct();
         public IEnumerable<string> GetKeyNames(string section) => _iniEntries.Where(x => x.Section == section).Select(x => x.Key);
-        public IEnumerable<IniEntry> GetIniEntries(string section) => _iniEntries.Where(x => x.Section == section);
-        public IniEntry GetIniEntry(string section, string key) => GetIniEntries(section).FirstOrDefault(x => x.Key == key);
+        public IEnumerable<IniFileEntry> GetIniEntries(string section) => _iniEntries.Where(x => x.Section == section);
+        public IniFileEntry GetIniEntry(string section, string key) => GetIniEntries(section).FirstOrDefault(x => x.Key == key);
 
         public void Load(string filename)
         {
@@ -72,7 +72,7 @@ namespace Martini
 
         public void Parse(IEnumerable<string> lines)
         {
-            _iniEntries = new List<IniEntry>();
+            _iniEntries = new List<IniFileEntry>();
             var section = "";
             var effectiveSection = "";
             var note = "";
@@ -93,7 +93,7 @@ namespace Martini
                         continue;
                     if (ParseKeyValue(uncommented, ref key, ref value))
                     {
-                        var entry = new IniEntry(section, key, value, note, allowedValues);
+                        var entry = new IniFileEntry(section, key, value, note, allowedValues);
                         note = "";
                         allowedValues = new string[] { };
                         _iniEntries.Add(entry);
