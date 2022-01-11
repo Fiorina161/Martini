@@ -36,8 +36,7 @@
     <LangVersion>8</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>
-    </ApplicationIcon>
+    <ApplicationIcon>ini.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
@@ -101,6 +100,9 @@
     <None Include="ini2.png" />
     <None Include="ini.png" />
     <None Include="inifile.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ini.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -120,15 +120,15 @@
             // 
             // largeImageList
             // 
-            this.largeImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-            this.largeImageList.ImageSize = new System.Drawing.Size(48, 48);
+            this.largeImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("largeImageList.ImageStream")));
             this.largeImageList.TransparentColor = System.Drawing.Color.Transparent;
+            this.largeImageList.Images.SetKeyName(0, "ini.ico");
             // 
             // smallImageList
             // 
-            this.smallImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-            this.smallImageList.ImageSize = new System.Drawing.Size(24, 24);
+            this.smallImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("smallImageList.ImageStream")));
             this.smallImageList.TransparentColor = System.Drawing.Color.Transparent;
+            this.smallImageList.Images.SetKeyName(0, "ini.ico");
             // 
             // editorPanel
             // 

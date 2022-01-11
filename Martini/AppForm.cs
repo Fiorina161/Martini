@@ -54,7 +54,6 @@ namespace Martini
         {
             base.OnLoad(e);
             Text = $@"Martini configuration editor {Assembly.GetExecutingAssembly().GetName().Version}";
-            BuildImageList();
             BuildListView();
             BuildProfileMenu();
             editorPanel.VerticalScroll.Visible = true;
@@ -125,18 +124,7 @@ namespace Martini
             BuildListView();
             ClearEditor();
         }
-
-        /**********************************************************************
-		 * Create image list used by ListView.
-		 *********************************************************************/
-        private void BuildImageList()
-        {
-            smallImageList.Images.Clear();
-            smallImageList.Images.Add(Resources.ini2);
-            largeImageList.Images.Clear();
-            largeImageList.Images.Add(Resources.ini2);
-        }
-
+        
         /**********************************************************************
 		 * Load supported ini files from disk and populate ListView.
 		 *********************************************************************/
