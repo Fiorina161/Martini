@@ -9,7 +9,7 @@ namespace MartiniTests
         [TestMethod]
         public void EmptyEntry()
         {
-            var sut = new IniFileEntry("", "", "", "", new string[] { });
+            var sut = new IniKeyValue("", "", "", "", new string[] { });
             Assert.IsFalse(sut.HasNote);
             Assert.IsFalse(sut.HasChanged);
             Assert.IsFalse(sut.IsEnumeration);
@@ -21,14 +21,14 @@ namespace MartiniTests
         [TestMethod]
         public void InvalidRestrictedDefault()
         {
-            var sut = new IniFileEntry("Section", "Key", "DefaultValue", "Note", new[] { "A", "B", "C" });
+            var sut = new IniKeyValue("Section", "Key", "DefaultValue", "Note", new[] { "A", "B", "C" });
             Assert.AreEqual("A", sut.CurrentOrDefault);
         }
 
         [TestMethod]
         public void InvalidRestrictedDefaultAndValue()
         {
-	        var sut = new IniFileEntry("Section", "Key", "DefaultValue", "Note", new[] { "A", "B", "C" });
+	        var sut = new IniKeyValue("Section", "Key", "DefaultValue", "Note", new[] { "A", "B", "C" });
 	        sut.CurrentValue = "InvalidValue";
 	        Assert.AreEqual("A", sut.CurrentOrDefault);
         }

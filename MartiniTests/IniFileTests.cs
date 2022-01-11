@@ -33,7 +33,7 @@ namespace MartiniTests
 
         [TestMethod]
         public void GetSectionNames() {
-	        var sut = new IniFile();
+	        var sut = new IniFileContent();
 	        sut.Parse(INI_CONTENT);
 
 	        var sectionNames = sut.GetSectionNames().ToArray();
@@ -42,7 +42,7 @@ namespace MartiniTests
 
         [TestMethod]
         public void GetKeyNames() {
-	        var sut = new IniFile();
+	        var sut = new IniFileContent();
 	        sut.Parse(INI_CONTENT);
 
 	        var keyNames = sut.GetKeyNames("sectionB").ToArray();
@@ -51,7 +51,7 @@ namespace MartiniTests
 
         [TestMethod]
         public void GetSpecificKey() {
-	        var sut = new IniFile();
+	        var sut = new IniFileContent();
 	        sut.Parse(INI_CONTENT);
             var entry = sut.GetIniEntry("","key0");
             Assert.AreEqual("value0", entry.DefaultValue);
@@ -64,7 +64,7 @@ namespace MartiniTests
         [TestMethod]
         public void WithNoEffectiveValue()
         {
-	        var sut = new IniFile();
+	        var sut = new IniFileContent();
 	        sut.Parse(INI_CONTENT);
 	        var entry = sut.GetIniEntry("sectionA","key1");
 	        Assert.AreEqual("value1", entry.DefaultValue);
@@ -77,7 +77,7 @@ namespace MartiniTests
         [TestMethod]
         public void WithNote()
         {
-	        var sut = new IniFile();
+	        var sut = new IniFileContent();
 	        sut.Parse(INI_CONTENT);
 	        var entry = sut.GetIniEntry("sectionC","key1");
 	        Assert.AreEqual("value1", entry.DefaultValue);
@@ -90,7 +90,7 @@ namespace MartiniTests
         [TestMethod]
         public void WithAllowedValues()
         {
-	        var sut = new IniFile();
+	        var sut = new IniFileContent();
 	        sut.Parse(INI_CONTENT);
 	        var entry = sut.GetIniEntry("sectionC","protocol");
 	        Assert.AreEqual("tcp", entry.DefaultValue);
