@@ -46,12 +46,12 @@ Only the *ini* files matching the proper syntax will be managed through Martini 
 # Warning
 
 When applying a configuration, the content is overwriten with only the Martini comments and the current values.
-This is by design, it keeps the managed files clean and tidy. Documentation whould be in other files and multiple 
+This is by design, it keeps the managed files clean and tidy. Documentation whould be in other files and multiple
 configuration values are best managed using profiles (see below).
 
 # Profiles
 
-Profiles allow you to manage multiple versions of you *ini* files. A profile is created using the *Profiles/Save as..." 
+Profiles allow you to manage multiple versions of you *ini* files. A profile is created using the *Profiles/Save as..."
 menu*. All the managed files are then packaged in a single zip archived with the chosen name.
 
 To restore a profile, simply select it under the *Profiles* menu. The files in the archive will be extracted to replace the
@@ -90,18 +90,10 @@ enabled=false
 
 # Screenshots
 
-Creating a Windows shortcut with the working directory set to the location of the ini files:
+Main window:
 
-![](screenshots/martini-shortcut.png)
+![](screenshots/martini2-home.png)
 
-View of supported *ini* files:
+Known profiles:
 
-![](screenshots/martini-layout.png)
-
-Editing an *ini* file:
-
-![](screenshots/martini-edit.png)
-
-List of known profiles: 
-
-![](screenshots/martini-profiles.png)
+![](screenshots/martini2-profiles.png)
