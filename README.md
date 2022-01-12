@@ -88,6 +88,11 @@ port=8887
 enabled=false
 ```
 
+# Hotkeys
+
+`F4` toggles to file view from list to icons.
+
+
 # Screenshots
 
 Main window:
