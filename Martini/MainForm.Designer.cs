@@ -1,6 +1,6 @@
 ﻿namespace Martini
 {
-    partial class AppForm
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AppForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.menuStrip = new System.Windows.Forms.MenuStrip();
-            this.profilesMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.snapshotsMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toggleListViewStyle = new System.Windows.Forms.ToolStripMenuItem();
             this.splitter = new System.Windows.Forms.SplitContainer();
@@ -57,7 +57,7 @@
             // menuStrip
             // 
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.profilesMenu,
+            this.snapshotsMenu,
             this.viewToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(10, 10);
             this.menuStrip.Name = "menuStrip";
@@ -65,11 +65,11 @@
             this.menuStrip.TabIndex = 0;
             this.menuStrip.Text = "menuStrip1";
             // 
-            // profilesMenu
+            // snapshotsMenu
             // 
-            this.profilesMenu.Name = "profilesMenu";
-            this.profilesMenu.Size = new System.Drawing.Size(58, 20);
-            this.profilesMenu.Text = "Profiles";
+            this.snapshotsMenu.Name = "snapshotsMenu";
+            this.snapshotsMenu.Size = new System.Drawing.Size(73, 20);
+            this.snapshotsMenu.Text = "Snapshots";
             // 
             // viewToolStripMenuItem
             // 
@@ -204,7 +204,7 @@
             this.mainPanel.Size = new System.Drawing.Size(780, 733);
             this.mainPanel.TabIndex = 1;
             // 
-            // AppForm
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -215,7 +215,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip;
-            this.Name = "AppForm";
+            this.Name = "MainForm";
             this.Padding = new System.Windows.Forms.Padding(10);
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -245,7 +245,7 @@
         private System.Windows.Forms.Panel buttonPanel;
         private System.Windows.Forms.ImageList smallImageList;
         private System.Windows.Forms.ImageList largeImageList;
-        private System.Windows.Forms.ToolStripMenuItem profilesMenu;
+        private System.Windows.Forms.ToolStripMenuItem snapshotsMenu;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.Panel mainPanel;
         private System.Windows.Forms.Button saveFileButton;

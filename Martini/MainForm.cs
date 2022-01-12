@@ -13,10 +13,10 @@ using TextBox = System.Windows.Forms.TextBox;
 
 namespace Martini
 {
-    public partial class AppForm : Form
+    public partial class MainForm : Form
     {
         /**
-		 * Add profile support.
+		 * Add snapshots support.
 		 */
         private class InputPayload
         {
@@ -29,7 +29,7 @@ namespace Martini
         /**********************************************************************
 		 * Constructor.
 		 *********************************************************************/
-        public AppForm()
+        public MainForm()
         {
             InitializeComponent();
         }
@@ -55,48 +55,52 @@ namespace Martini
             base.OnLoad(e);
             Text = $@"Martini configuration editor {Assembly.GetExecutingAssembly().GetName().Version}";
             BuildListView();
-            BuildProfileMenu();
+            BuildSnapshotMenu();
             editorPanel.VerticalScroll.Visible = true;
             saveFileButton.Enabled = false;
         }
 
         /**********************************************************************
-		 * Creates profile menu from zip files found in current directory.
+		 * Creates snapshots menu from zip files found in current directory.
 		 *********************************************************************/
-        private void BuildProfileMenu()
+        private void BuildSnapshotMenu()
         {
-            profilesMenu.DropDownItems.Clear();
+            snapshotsMenu.DropDownItems.Clear();
             var filenames = Directory.EnumerateFiles(Environment.CurrentDirectory, "*.zip", SearchOption.TopDirectoryOnly);
 
             foreach (var filename in filenames)
             {
-                var btn = new ToolStripButton(Path.GetFileNameWithoutExtension(filename));
+                var btn = new ToolStripButton(Path.GetFileNameWithoutExtension(filename)){Image = Resources.package_box};
                 btn.Tag = filename;
-                btn.Click += LoadProfileFromDisk;
-                profilesMenu.DropDownItems.Add(btn);
+                btn.Click += LoadSnapshot;
+                snapshotsMenu.DropDownItems.Add(btn);
             }
 
-            profilesMenu.DropDownItems.Add(new ToolStripSeparator());
+            snapshotsMenu.DropDownItems.Add(new ToolStripSeparator());
 
-            var saveButton = new ToolStripButton("Save as...");
-            saveButton.Click += OnSaveProfile;
-            saveButton.Width = 100;
-            profilesMenu.DropDownItems.Add(saveButton);
+            var saveSnapshotButton = new ToolStripButton("Save snapshot as..."){Image = Resources.package_box};
+            saveSnapshotButton.Click += OnSaveSnapshot;
+            
+            snapshotsMenu.DropDownItems.Add(saveSnapshotButton);
+            
+            var openDirectoryButton = new ToolStripButton("Open folder in Explorer..."){Width = 150, Image = Resources.folder};
+            openDirectoryButton.Click += (s, e) => Process.Start(".");
+            snapshotsMenu.DropDownItems.Add(openDirectoryButton);
         }
 
         /**********************************************************************
 		 * Saves current ini files into a zip file.
 		 *********************************************************************/
-        private void OnSaveProfile(object sender, EventArgs e)
+        private void OnSaveSnapshot(object sender, EventArgs e)
         {
-            var filename = Interaction.InputBox("Profile name?", "Save profile as...");
+            var filename = Interaction.InputBox("Snapshot name?", "Save snapshot as...");
             if (string.IsNullOrEmpty(filename))
                 return;
 
             filename += ".zip";
             if (File.Exists(filename))
             {
-                if (MessageBox.Show(@"File already exists, replace?", filename, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                if (MessageBox.Show(@"Snapshsot already exists, replace?", filename, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     File.Delete(filename);
                 else
                     return;
@@ -108,13 +112,13 @@ namespace Martini
                 var ini = (IniFileContent)item.Tag;
                 zip.CreateEntryFromFile(ini.FileName, Path.GetFileName(ini.FileName), CompressionLevel.Optimal);
             }
-            BuildProfileMenu();
+            BuildSnapshotMenu();
         }
 
         /**********************************************************************
-		 * Loads profile zip file and replaces current files with content.
+		 * Loads snapshots zip file and replaces current files with content.
 		 *********************************************************************/
-        private void LoadProfileFromDisk(object sender, EventArgs e)
+        private void LoadSnapshot(object sender, EventArgs e)
         {
             var button = (ToolStripButton)sender;
             var filename = (string)button.Tag;

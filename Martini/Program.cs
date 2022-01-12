@@ -12,7 +12,7 @@ namespace Martini
             Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new MainForm());
             //Application.Run(new ApplicationForm());
-            Application.Run(new AppForm());
+            Application.Run(new MainForm());
         }
     }
 }
