@@ -90,7 +90,8 @@ enabled=false
 
 # Hotkeys
 
-`F4` toggles to file view from list to icons.
+- `Esc` Quit application.
+- `F4` Toggle file view.
 
 
 # Screenshots
