@@ -98,8 +98,8 @@ enabled=false
 
 Main window:
 
-![](screenshots/martini2-home.png)
+![](screenshots/martini-main.png)
 
 Known profiles:
 
-![](screenshots/martini2-profiles.png)
+![](screenshots/martini-snapshots.png)
