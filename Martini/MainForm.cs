@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using Martini.Properties;
@@ -68,7 +69,7 @@ namespace Martini
             snapshotsMenu.DropDownItems.Clear();
             var filenames = Directory.EnumerateFiles(Environment.CurrentDirectory, "*.zip", SearchOption.TopDirectoryOnly);
 
-            foreach (var filename in filenames)
+            foreach (var filename in filenames.OrderBy(x=>x))
             {
                 var btn = new ToolStripButton(Path.GetFileNameWithoutExtension(filename)){Image = Resources.package_box};
                 btn.Tag = filename;
