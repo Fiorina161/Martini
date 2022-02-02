@@ -26,6 +26,7 @@ namespace Martini
         }
 
         private int _maxKeyWidth;
+        private FileSystemWatcher _watcher;
 
         /**********************************************************************
 		 * Constructor.
@@ -33,6 +34,7 @@ namespace Martini
         public MainForm()
         {
             InitializeComponent();
+            InstallFileSystemWatcher();
         }
 
         /**********************************************************************
@@ -69,9 +71,9 @@ namespace Martini
             snapshotsMenu.DropDownItems.Clear();
             var filenames = Directory.EnumerateFiles(Environment.CurrentDirectory, "*.zip", SearchOption.TopDirectoryOnly);
 
-            foreach (var filename in filenames.OrderBy(x=>x))
+            foreach (var filename in filenames.OrderBy(x => x))
             {
-                var btn = new ToolStripButton(Path.GetFileNameWithoutExtension(filename)){Image = Resources.package_box};
+                var btn = new ToolStripButton(Path.GetFileNameWithoutExtension(filename)) { Image = Resources.package_box };
                 btn.Tag = filename;
                 btn.Click += LoadSnapshot;
                 snapshotsMenu.DropDownItems.Add(btn);
@@ -79,12 +81,12 @@ namespace Martini
 
             snapshotsMenu.DropDownItems.Add(new ToolStripSeparator());
 
-            var saveSnapshotButton = new ToolStripButton("Save snapshot as..."){Image = Resources.package_box};
+            var saveSnapshotButton = new ToolStripButton("Save snapshot as...") { Image = Resources.package_box };
             saveSnapshotButton.Click += OnSaveSnapshot;
-            
+
             snapshotsMenu.DropDownItems.Add(saveSnapshotButton);
-            
-            var openDirectoryButton = new ToolStripButton("Open folder in Explorer..."){Width = 150, Image = Resources.folder};
+
+            var openDirectoryButton = new ToolStripButton("Open folder in Explorer...") { Width = 150, Image = Resources.folder };
             openDirectoryButton.Click += (s, e) => Process.Start(".");
             snapshotsMenu.DropDownItems.Add(openDirectoryButton);
         }
@@ -129,7 +131,7 @@ namespace Martini
             BuildListView();
             ClearEditor();
         }
-        
+
         /**********************************************************************
 		 * Load supported ini files from disk and populate ListView.
 		 *********************************************************************/
@@ -172,8 +174,8 @@ namespace Martini
             }
             else
             {
-                var item = listView.SelectedItems[0];
-                var iniFileData = item.Tag as IniFileContent;
+                var listViewSelectedItem = listView.SelectedItems[0];
+                var iniFileData = listViewSelectedItem.Tag as IniFileContent;
                 var fileName = iniFileData?.FileName;
                 currentFileLabel.Text = $@"  {Path.GetFileName(fileName)}  ";
                 currentFileLabel.Tag = iniFileData;
@@ -203,7 +205,6 @@ namespace Martini
 
             editorPanel.Controls.Clear();
 
-            SuspendLayout();
             foreach (var sectionName in iniFileContent.GetSectionNames())
             {
                 if (!string.IsNullOrEmpty(sectionName))
@@ -226,8 +227,6 @@ namespace Martini
                     y += valueControl.Height + 12;
                 }
             }
-            ResumeLayout();
-
             editorPanel.Controls.Add(new Label { Top = y, Height = 12 }); // Bottom padding
 
             UpdateValueControlsSize();
@@ -246,7 +245,7 @@ namespace Martini
                 AutoSize = true,
                 Font = iniKeyValue.DefaultValue == iniKeyValue.CurrentValue ? Font : new Font(Font, FontStyle.Bold)
             };
-            
+
             toolTip1.SetToolTip(label, $"{iniKeyValue.Note} [default='{iniKeyValue.DefaultValue}']");
             return label;
         }
@@ -336,7 +335,7 @@ namespace Martini
                 AutoSize = true,
                 Font = new Font(Font, FontStyle.Bold),
                 ForeColor = Color.White,
-                BackColor = Color.FromArgb(64, 64, 64),
+                BackColor = Color.FromArgb(50, 100, 200),
                 Padding = new Padding(5, 3, 5, 3)
             };
         }
@@ -383,26 +382,6 @@ namespace Martini
                 }
                 ResumeLayout();
             }
-        }
-
-        /**********************************************************************
-		 * Toggle ListView mode on F4
-		 *********************************************************************/
-        private void OnFormKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.F4)
-                ToggleListViewStyle();
-        }
-
-        /**********************************************************************
-		 * Quit application on ESC.
-		 *********************************************************************/
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData != Keys.Escape)
-                return base.ProcessCmdKey(ref msg, keyData);
-            Close();
-            return true;
         }
 
         /**********************************************************************
@@ -479,6 +458,74 @@ namespace Martini
         private void EditorPanel_Resize(object sender, EventArgs e)
         {
             UpdateValueControlsSize();
+        }
+
+        private void InstallFileSystemWatcher()
+        {
+            _watcher = new FileSystemWatcher(Environment.CurrentDirectory);
+            _watcher.IncludeSubdirectories = false;
+            _watcher.Changed += OnFileOnDiskChanged;
+            _watcher.Created += OnDirectoryChanged;
+            _watcher.Deleted += OnDirectoryChanged;
+            _watcher.Renamed += OnDirectoryChanged;
+            _watcher.EnableRaisingEvents = true;
+            FormClosed += (s, e) => _watcher.Dispose();
+        }
+
+        private void OnDirectoryChanged(object sender, FileSystemEventArgs e)
+        {
+            var currentFilename = currentFileLabel.Text.Trim();
+            Invoke(new Action(BuildSnapshotMenu));
+            Invoke(new Action(BuildListView));
+            Invoke(new Action(() => SelectItem(currentFilename)));
+            
+        }
+
+        private void OnFileOnDiskChanged(object sender, FileSystemEventArgs e)
+        {
+            var currentFilename = currentFileLabel.Text.Trim();
+            if (currentFilename == e.Name)
+            {
+                Invoke(new Action(BuildListView));
+                Invoke(new Action(() => SelectItem(currentFilename)));
+            }
+        }
+
+        private void SelectItem(string currentFilename)
+        {
+            foreach (ListViewItem item in listView.Items)
+            {
+                var data = (IniFileContent)item.Tag;
+                var filename = Path.GetFileName(data.FileName);
+                if (filename == currentFilename)
+                {
+                    item.Selected = true;
+                    return;
+                }
+            }
+            // No selected item... clear the editor panel...
+            Invoke(new Action(ClearEditor));
+        }
+
+        private void OnFormKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F4)
+                ToggleListViewStyle();
+            else if (e.Control && e.KeyCode == Keys.S && saveFileButton.Enabled)
+                saveFileButton.PerformClick();
+            else if (e.KeyCode == Keys.F8)
+                useDefaultValuesButton.PerformClick();
+
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Escape)
+            {
+                Close();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
     }
 }

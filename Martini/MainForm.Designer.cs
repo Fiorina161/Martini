@@ -40,7 +40,7 @@
             this.smallImageList = new System.Windows.Forms.ImageList(this.components);
             this.editorPanel = new System.Windows.Forms.Panel();
             this.buttonPanel = new System.Windows.Forms.Panel();
-            this.resetButton = new System.Windows.Forms.Button();
+            this.useDefaultValuesButton = new System.Windows.Forms.Button();
             this.currentFileLabel = new System.Windows.Forms.Label();
             this.saveFileButton = new System.Windows.Forms.Button();
             this.mainPanel = new System.Windows.Forms.Panel();
@@ -147,7 +147,7 @@
             // buttonPanel
             // 
             this.buttonPanel.BackColor = System.Drawing.SystemColors.Control;
-            this.buttonPanel.Controls.Add(this.resetButton);
+            this.buttonPanel.Controls.Add(this.useDefaultValuesButton);
             this.buttonPanel.Controls.Add(this.currentFileLabel);
             this.buttonPanel.Controls.Add(this.saveFileButton);
             this.buttonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -157,17 +157,17 @@
             this.buttonPanel.TabIndex = 0;
             this.buttonPanel.Visible = false;
             // 
-            // resetButton
+            // useDefaultValuesButton
             // 
-            this.resetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.resetButton.AutoSize = true;
-            this.resetButton.Location = new System.Drawing.Point(353, 6);
-            this.resetButton.Name = "resetButton";
-            this.resetButton.Size = new System.Drawing.Size(105, 23);
-            this.resetButton.TabIndex = 2;
-            this.resetButton.Text = "Use default values";
-            this.resetButton.UseVisualStyleBackColor = true;
-            this.resetButton.Click += new System.EventHandler(this.ResetButton_Click);
+            this.useDefaultValuesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.useDefaultValuesButton.AutoSize = true;
+            this.useDefaultValuesButton.Location = new System.Drawing.Point(332, 6);
+            this.useDefaultValuesButton.Name = "useDefaultValuesButton";
+            this.useDefaultValuesButton.Size = new System.Drawing.Size(126, 23);
+            this.useDefaultValuesButton.TabIndex = 2;
+            this.useDefaultValuesButton.Text = "[F8] Use default values";
+            this.useDefaultValuesButton.UseVisualStyleBackColor = true;
+            this.useDefaultValuesButton.Click += new System.EventHandler(this.ResetButton_Click);
             // 
             // currentFileLabel
             // 
@@ -190,7 +190,7 @@
             this.saveFileButton.Name = "saveFileButton";
             this.saveFileButton.Size = new System.Drawing.Size(75, 23);
             this.saveFileButton.TabIndex = 1;
-            this.saveFileButton.Text = "Save";
+            this.saveFileButton.Text = "&Save";
             this.saveFileButton.UseVisualStyleBackColor = true;
             this.saveFileButton.Click += new System.EventHandler(this.SaveFileButton_Click);
             // 
@@ -251,7 +251,7 @@
         private System.Windows.Forms.Button saveFileButton;
         private System.Windows.Forms.ToolStripMenuItem toggleListViewStyle;
         private System.Windows.Forms.Label currentFileLabel;
-        private System.Windows.Forms.Button resetButton;
+        private System.Windows.Forms.Button useDefaultValuesButton;
         private System.Windows.Forms.ToolTip toolTip1;
     }
 }

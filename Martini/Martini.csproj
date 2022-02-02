@@ -96,9 +96,6 @@
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ini3.png" />
-    <None Include="ini2.png" />
-    <None Include="ini.png" />
     <None Include="inifile.ico" />
   </ItemGroup>
   <ItemGroup>
