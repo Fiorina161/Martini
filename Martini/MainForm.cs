@@ -82,11 +82,11 @@ namespace Martini
             snapshotsMenu.DropDownItems.Add(new ToolStripSeparator());
 
             var saveSnapshotButton = new ToolStripButton("Save snapshot as...") { Image = Resources.package_box };
-            saveSnapshotButton.Click += OnSaveSnapshot;
+            saveSnapshotButton.Click += SaveSnapshot;
 
             snapshotsMenu.DropDownItems.Add(saveSnapshotButton);
 
-            var openDirectoryButton = new ToolStripButton("Open folder in Explorer...") { Width = 150, Image = Resources.folder };
+            var openDirectoryButton = new ToolStripButton("Open in Explorer...") { Width = 150, Image = Resources.folder };
             openDirectoryButton.Click += (s, e) => Process.Start(".");
             snapshotsMenu.DropDownItems.Add(openDirectoryButton);
         }
@@ -94,20 +94,23 @@ namespace Martini
         /**********************************************************************
 		 * Saves current ini files into a zip file.
 		 *********************************************************************/
-        private void OnSaveSnapshot(object sender, EventArgs e)
+        private void SaveSnapshot(object sender, EventArgs e)
         {
-            var filename = Interaction.InputBox("Snapshot name?", "Save snapshot as...");
-            if (string.IsNullOrEmpty(filename))
+            var dialog = new SaveFileDialog
+            {
+                CreatePrompt = true,
+                OverwritePrompt = true,
+                DefaultExt = "*.zip",
+                AddExtension = true,
+                CheckPathExists = true,
+                Filter = @"Snapshots|*.zip"
+            };
+            if (dialog.ShowDialog(this) != DialogResult.OK)
                 return;
 
-            filename += ".zip";
+            var filename = dialog.FileName;
             if (File.Exists(filename))
-            {
-                if (MessageBox.Show(@"Snapshsot already exists, replace?", filename, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
-                    File.Delete(filename);
-                else
-                    return;
-            }
+                File.Delete(filename);
 
             using var zip = ZipFile.Open(filename, ZipArchiveMode.Update);
             foreach (ListViewItem item in listView.Items)
@@ -478,7 +481,7 @@ namespace Martini
             Invoke(new Action(BuildSnapshotMenu));
             Invoke(new Action(BuildListView));
             Invoke(new Action(() => SelectItem(currentFilename)));
-            
+
         }
 
         private void OnFileOnDiskChanged(object sender, FileSystemEventArgs e)
