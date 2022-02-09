@@ -7,7 +7,6 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using Martini.Properties;
-using Microsoft.VisualBasic;
 using ComboBox = System.Windows.Forms.ComboBox;
 using Label = System.Windows.Forms.Label;
 using TextBox = System.Windows.Forms.TextBox;
